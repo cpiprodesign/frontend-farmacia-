@@ -1,0 +1,75 @@
+:root {
+  --primary: #6366f1; /* azul-violeta suave tipo Kleon */
+  --bg: #f5f6fa;
+  --card: #ffffff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --radius: 16px;
+  --el-font-family:
+    "Roboto", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+body {
+  margin: 0;
+  /* font-family: Roboto, sans-serif; */
+  font-family: var(--el-font-family);
+  /* font-family: Lato, sans-serif; */
+
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+}
+.roboto-<uniquifier > {
+  font-family: "Roboto", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.el-table {
+  font-size: 14px;
+}
+
+.el-button {
+  font-weight: 500;
+}
+
+.el-dialog__title {
+  font-weight: 600;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.el-button {
+  font-weight: 500;
+}
+
+.el-card {
+  border-radius: var(--radius);
+  border: none;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
+}
+
+.el-button--primary {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.el-table {
+  background: transparent;
+  font-size: 14px;
+}
