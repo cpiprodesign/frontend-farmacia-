@@ -1,11 +1,19 @@
-import axios from "axios";
+import axios from "axios"
 
-const api = axios.create({
-  baseURL: "http://api-farmacia.test/api",
-  headers: {
-    "x-api-key": "vz1M5Pk1zhn0AnOtTMwxT0TwQbTco48VcK1zffQmmyHgRaCXQg9Rp41YvGpq",
-    "Content-Type": "application/json",
-  },
-});
+axios.defaults.baseURL =
+"https://api-farmacia.test/api"
 
-export default api;
+axios.interceptors.request.use(config => {
+
+    const token =
+    localStorage.getItem("token")
+
+    if(token){
+        config.headers.Authorization =
+        `Bearer ${token}`
+    }
+
+    return config
+})
+
+export default axios

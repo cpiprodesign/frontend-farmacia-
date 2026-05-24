@@ -10,23 +10,10 @@
         <!-- clearable -->
         <!-- /> -->
 
-        <el-select
-          v-model="productoSeleccionado"
-          filterable
-          remote
-          reserve-keyword
-          placeholder="Buscar producto"
-          :remote-method="buscarProductos1"
-          :loading="loading"
-          @change="seleccionarProducto"
-          style="width: 100%"
-        >
-          <el-option
-            v-for="item in productos"
-            :key="item.id"
-            :label="item.descripcion + '-' + item.laboratorio.nombre"
-            :value="item"
-          />
+        <el-select v-model="productoSeleccionado" filterable remote reserve-keyword placeholder="Buscar producto"
+          :remote-method="buscarProductos1" :loading="loading" @change="seleccionarProducto" style="width: 100%">
+          <el-option v-for="item in productos" :key="item.id" :label="item.descripcion + '-' + item.laboratorio.nombre"
+            :value="item" />
         </el-select>
       </el-card>
       <div class="pos-body">
@@ -35,24 +22,16 @@
           <div class="cart-header">🧾 Detalle de venta</div>
           <el-table :data="items" border>
             <el-table-column prop="descripcion" label="Producto" />
-            <el-table-column label="Cant" width="120">
+            <el-table-column label="Cant" width="180">
               <template #default="{ row }">
-                <el-input-number
-                  v-model="row.cantidad"
-                  @change="calcular"
-                  :min="1"
-                />
+                <el-input-number v-model="row.cantidad" @change="calcular" :min="1" />
               </template>
             </el-table-column>
             <el-table-column prop="precio" label="Precio" width="100" />
             <el-table-column prop="subtotal" label="Subtotal" width="120" />
             <el-table-column width="60">
               <template #default="{ $index }">
-                <el-button
-                  type="danger"
-                  size="small"
-                  @click="removeItem($index)"
-                >
+                <el-button type="danger" size="small" @click="removeItem($index)">
                   ✕
                 </el-button>
               </template>
@@ -64,25 +43,46 @@
           <div class="field">
             <label>Documento</label>
             <el-select v-model="form.documento_id">
-              <el-option
-                v-for="d in documentos"
-                :key="d.id"
-                :label="d.nombre"
-                :value="d.id"
-              />
+              <el-option v-for="d in documentos" :key="d.id" :label="d.nombre" :value="d.id" />
             </el-select>
           </div>
           <div class="field">
             <label>Cliente</label>
             <el-select v-model="form.cliente_id" filterable>
-              <el-option
-                v-for="c in clientes"
-                :key="c.id"
-                :label="c.nombre"
-                :value="c.id"
-              />
+              <el-option v-for="c in clientes" :key="c.id" :label="c.nombre" :value="c.id" />
             </el-select>
           </div>
+          <div class="field">
+            <label>Metodos de pago </label>
+            <el-form-item >
+  <el-select
+    v-model="metodo_pago"
+    placeholder="Seleccionar"
+    style="width:100%"
+  >
+    <el-option
+      label="💵 Efectivo"
+      value="EFECTIVO"
+    />
+
+    <el-option
+      label="📱 Yape"
+      value="YAPE"
+    />
+
+    <el-option
+      label="📲 Plin"
+      value="PLIN"
+    />
+
+    <el-option
+      label="💳 Tarjeta"
+      value="TARJETA"
+    />
+  </el-select>
+</el-form-item>
+          </div>
+
           <div class="totals-box">
             <div>Subtotal: {{ base.toFixed(2) }}</div>
             <div>IGV: {{ igv.toFixed(2) }}</div>
@@ -91,6 +91,13 @@
           <el-button type="success" size="large" @click="guardar">
             💳 COBRAR
           </el-button>
+          <!-- <el-button @click="verTicket">
+  Vista previa ticket
+</el-button> -->
+
+<!-- <el-button type="success" @click="imprimir">
+  Imprimir
+</el-button> -->
         </el-card>
       </div>
       <!-- <el-dialog v-model="dialogTicket" width="300px" title="Ticket"> -->
@@ -109,7 +116,10 @@
       <!-- </div> -->
       <!-- </el-dialog> -->
       <!-- vista previa -->
-      <ticketPost v-if="ticket" :venta="ticket" />
+        <!-- <ticketPost v-if="ticket" :venta="ticket" /> -->
+      <div class="ticket">
+  <ticketPost v-if="ticket" :venta="ticket" />
+</div>
     </div>
   </AppCard>
 </template>
@@ -138,10 +148,26 @@ const form = ref({
   cliente_id: null,
   fecha: new Date(),
   sucursal_id: 1,
+   
 });
+const metodo_pago=ref('EFECTIVO');
 const dialogTicket = ref(false);
 const ventaTicket = ref(null);
 //const ticket = ref(null);
+
+//METODOS
+
+
+const verTicket = () => {
+
+  if(!ticket.value){
+    ElMessage.warning("Primero registra una venta")
+    return
+  }
+
+  window.print()
+
+}
 const imprimir = async (venta) => {
   ventaTicket.value = venta;
   dialogTicket.value = true;
@@ -224,7 +250,10 @@ const guardar = async () => {
     // 🔹 GUARDAR VENTA
     const res = await createVenta({
       ...form.value,
-      sucursal_id: 1,
+      //sucursal_id: 1,
+      sucursal_id: localStorage.getItem("sucursal_id"),
+       apertura_id: localStorage.getItem("apertura_id"),
+       metodo_pago: metodo_pago.value, // 👈 IMPORTANTE
       items: items.value,
       subtotal: base.value,
       igv: igv.value,
@@ -236,13 +265,15 @@ const guardar = async () => {
     // 🔹 IMPRIMIR TICKET
     // imprimir(res.data.data);
     ticket.value = res.data.data;
-    console.log(ticket.value);
+    //console.log(ticket.value);
 
     // 🔹 esperar render
     await nextTick();
 
     // 🔹 imprimir
-    window.print();
+    setTimeout(() => {
+  window.print()
+}, 300)
 
     // 🔹 LIMPIAR CARRITO
     items.value = [];

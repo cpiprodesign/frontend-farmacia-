@@ -18,10 +18,7 @@
               <el-button size="small" type="primary" @click="edit(row)">
                 Editar
               </el-button>
-              <el-popconfirm
-                title="¿Eliminar categoría?"
-                @confirm="remove(row.id)"
-              >
+              <el-popconfirm title="¿Eliminar categoría?" @confirm="remove(row.id)">
                 <template #reference>
                   <el-button size="small" type="danger" plain>
                     Eliminar
@@ -34,12 +31,7 @@
       </el-card>
       <!-- MOBILE / CARDS -->
       <div v-else class="mobile-list">
-        <el-card
-          v-for="item in categorias"
-          :key="item.id"
-          class="mobile-card"
-          shadow="hover"
-        >
+        <el-card v-for="item in categorias" :key="item.id" class="mobile-card" shadow="hover">
           <div class="mobile-title">{{ item.nombre }}</div>
           <div class="mobile-desc">
             {{ item.descripcion || "—" }}
@@ -59,12 +51,8 @@
         </el-card>
       </div>
       <!-- MODAL -->
-      <el-dialog
-        v-model="modal"
-        :title="form.id ? 'Editar Categoría' : 'Nueva Categoría'"
-        width="420px"
-        destroy-on-close
-      >
+      <el-dialog v-model="modal" :title="form.id ? 'Editar Categoría' : 'Nueva Categoría'" width="420px"
+        destroy-on-close>
         <el-form :model="form" label-position="top">
           <el-form-item label="Nombre">
             <el-input v-model="form.nombre" placeholder="Ej: Pastillas" />
@@ -76,12 +64,7 @@
         <template #footer>
           <div class="dialog-footer">
             <el-button @click="modal = false"> Cancelar </el-button>
-            <el-button
-              type="primary"
-              :loading="loadingSave"
-              :disabled="loadingSave"
-              @click="save"
-            >
+            <el-button type="primary" :loading="loadingSave" :disabled="loadingSave" @click="save">
               Guardar
             </el-button>
           </div>
